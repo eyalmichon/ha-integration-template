@@ -1,0 +1,58 @@
+_subdirectory: template
+_templates_suffix: .jinja
+_min_copier_version: "9.0.0"
+
+domain:
+  type: str
+  help: "Integration domain (lowercase with underscores, e.g. 'my_device')"
+  validator: "{% if not domain | regex_search('^[a-z][a-z0-9_]*$') %}Must be lowercase letters, numbers, and underscores, starting with a letter{% endif %}"
+
+integration_name:
+  type: str
+  help: "Human-readable name (e.g. 'My Integration')"
+
+description:
+  type: str
+  help: "Short description of the integration"
+  default: "A custom Home Assistant integration"
+
+github_user:
+  type: str
+  help: "GitHub username (for URLs and CODEOWNERS)"
+  default: "eyalmichon"
+
+iot_class:
+  type: str
+  help: "IoT class for the integration"
+  choices:
+    local_polling: "Local Polling"
+    local_push: "Local Push"
+    cloud_polling: "Cloud Polling"
+    cloud_push: "Cloud Push"
+    calculated: "Calculated"
+    assumed_state: "Assumed State"
+  default: local_polling
+
+integration_type:
+  type: str
+  help: "Integration type"
+  choices:
+    hub: "Hub"
+    device: "Device"
+    service: "Service"
+  default: service
+
+platforms:
+  type: str
+  help: "Comma-separated platforms (e.g. 'sensor,switch,binary_sensor')"
+  default: "sensor"
+
+has_config_flow:
+  type: bool
+  help: "Include a config flow?"
+  default: true
+
+python_version:
+  type: str
+  help: "Python version"
+  default: "3.13"

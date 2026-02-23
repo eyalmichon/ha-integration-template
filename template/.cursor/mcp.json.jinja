@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "{{ domain }}-dev": {
+      "command": "python",
+      "args": ["-m", "mcp_server"],
+      "env": {
+        "PYTHONPATH": "scripts"
+      },
+      "cwd": "/workspaces/ha-{{ domain }}"
+    }
+  }
+}

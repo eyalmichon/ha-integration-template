@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  manifest_bump:
+    name: manifest_bump
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        uses: home-assistant/actions/helpers/version@master
+        id: version
+
+      - name: Bump manifest and create zip
+        run: |
+          sed -i 's/v0.0.0/{% raw %}${{ steps.version.outputs.version }}{% endraw %}/' custom_components/{{ domain }}/manifest.json
+          cd custom_components/{{ domain }}/
+          zip ../../{{ domain }}.zip -r ./
+
+      - name: Upload the release
+        uses: svenstaro/upload-release-action@master
+        with:
+          repo_token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          file: ./{{ domain }}.zip
+          asset_name: {{ domain }}.zip
+          tag: {% raw %}${{ github.ref }}{% endraw %}
+          overwrite: true
