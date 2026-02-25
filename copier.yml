@@ -25,21 +25,21 @@ iot_class:
   type: str
   help: "IoT class for the integration"
   choices:
-    local_polling: "Local Polling"
-    local_push: "Local Push"
-    cloud_polling: "Cloud Polling"
-    cloud_push: "Cloud Push"
-    calculated: "Calculated"
-    assumed_state: "Assumed State"
+    "Local Polling": local_polling
+    "Local Push": local_push
+    "Cloud Polling": cloud_polling
+    "Cloud Push": cloud_push
+    "Calculated": calculated
+    "Assumed State": assumed_state
   default: local_polling
 
 integration_type:
   type: str
   help: "Integration type"
   choices:
-    hub: "Hub"
-    device: "Device"
-    service: "Service"
+    "Hub": hub
+    "Device": device
+    "Service": service
   default: service
 
 platforms:

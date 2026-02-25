@@ -19,7 +19,7 @@ A [Copier](https://copier.readthedocs.io/) template for bootstrapping Home Assis
 
 ```bash
 # Install copier (one time)
-pipx install copier
+pip install copier
 
 # Scaffold a new integration
 copier copy gh:eyalmichon/ha-integration-template ./ha-my-integration
