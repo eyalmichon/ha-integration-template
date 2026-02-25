@@ -4,12 +4,12 @@ _min_copier_version: "9.0.0"
 
 domain:
   type: str
-  help: "Integration domain (lowercase with underscores, e.g. 'my_device')"
+  help: "Integration domain — used as the folder name under custom_components/ and the DOMAIN constant (e.g. 'smart_thermostat', 'solar_monitor')"
   validator: "{% if not domain | regex_search('^[a-z][a-z0-9_]*$') %}Must be lowercase letters, numbers, and underscores, starting with a letter{% endif %}"
 
 integration_name:
   type: str
-  help: "Human-readable name (e.g. 'My Integration')"
+  help: "Human-readable name shown in the HA UI, README, and HACS listing (e.g. 'My Integration')"
 
 description:
   type: str
@@ -23,36 +23,40 @@ github_user:
 
 iot_class:
   type: str
-  help: "IoT class for the integration"
+  help: "How the integration communicates with devices/services (https://www.home-assistant.io/blog/2016/02/12/classifying-the-internet-of-things/)"
   choices:
-    "Local Polling": local_polling
-    "Local Push": local_push
-    "Cloud Polling": cloud_polling
-    "Cloud Push": cloud_push
-    "Calculated": calculated
-    "Assumed State": assumed_state
+    "Local Polling - Communicates directly with the device, state is fetched at intervals": local_polling
+    "Local Push - Communicates directly with the device, state is pushed on change": local_push
+    "Cloud Polling - Communicates via cloud (requires internet), state is fetched at intervals": cloud_polling
+    "Cloud Push - Communicates via cloud (requires internet), state is pushed on change": cloud_push
+    "Calculated - Entity values are computed from other data, no external I/O": calculated
+    "Assumed State - Cannot read device state, assumes based on last command sent": assumed_state
   default: local_polling
 
 integration_type:
   type: str
-  help: "Integration type"
+  help: "The kind of integration this is, affects how HA treats config entries (https://developers.home-assistant.io/docs/creating_integration_manifest)"
   choices:
-    "Hub": hub
-    "Device": device
-    "Service": service
+    "Hub - Connects to a gateway that manages multiple devices (e.g. Philips Hue, Z-Wave)": hub
+    "Device - Represents a single device directly (e.g. ESPHome, a smart plug)": device
+    "Service - Connects to a service/API, not a physical device (e.g. weather, DuckDNS)": service
   default: service
 
 platforms:
   type: str
-  help: "Comma-separated platforms (e.g. 'sensor,switch,binary_sensor')"
+  help: |
+    Comma-separated HA platforms to expose (https://developers.home-assistant.io/docs/core/entity).
+    Available: sensor (readings), binary_sensor (on/off states), switch (toggleable controls),
+    button (one-shot triggers), select (dropdown), number (numeric input), climate (HVAC/thermostat),
+    light (brightness/color), cover (blinds/garage), fan, lock, media_player, camera
   default: "sensor"
 
 has_config_flow:
   type: bool
-  help: "Include a config flow?"
+  help: "Include a config flow? This is the UI-based setup wizard in Settings > Devices & Services. Almost always true for new integrations"
   default: true
 
 python_version:
   type: str
-  help: "Python version"
+  help: "Python version for the devcontainer and pyproject.toml — should match your target HA release"
   default: "3.13"
