@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Generate platform stub files, then self-delete."""
+
+import os
+
+DOMAIN = "{{ domain }}"
+INTEGRATION_NAME = "{{ integration_name }}"
+PLATFORMS = [p.strip() for p in "{{ platforms }}".split(",") if p.strip()]
+
+STUB = '''\
+"""{Label} platform for {name}."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up {name} {label} entities."""
+'''
+
+comp_dir = os.path.join("custom_components", DOMAIN)
+
+for platform in PLATFORMS:
+    path = os.path.join(comp_dir, f"{platform}.py")
+    if os.path.exists(path):
+        continue
+    label = platform.replace("_", " ")
+    with open(path, "w") as f:
+        f.write(STUB.format(Label=label.capitalize(), label=label, name=INTEGRATION_NAME))
+
+os.unlink(os.path.abspath(__file__))
