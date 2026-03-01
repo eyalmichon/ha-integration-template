@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+HA_CONFIG="${PWD}/.dev/ha"
+
+# Ensure HA config exists (check for .HA_VERSION, not just the directory).
+if [[ ! -f "${HA_CONFIG}/.HA_VERSION" ]]; then
+    mkdir -p "${HA_CONFIG}"
+    echo "Creating initial Home Assistant config..."
+    hass --config "${HA_CONFIG}" --script ensure_config
+fi
+
+# Create custom_components dir and symlink only our integration.
+mkdir -p "${HA_CONFIG}/custom_components"
+if [[ ! -e "${HA_CONFIG}/custom_components/{{ domain }}" ]]; then
+    ln -sf "${PWD}/custom_components/{{ domain }}" "${HA_CONFIG}/custom_components/{{ domain }}"
+fi
+
+# Install HACS if not already present.
+if [[ ! -d "${HA_CONFIG}/custom_components/hacs" ]]; then
+    echo "Installing HACS..."
+    (cd "${HA_CONFIG}" && wget -qO- https://get.hacs.xyz | bash -) || echo "HACS install failed (non-fatal)"
+fi
+
+# Create default dev user and skip onboarding wizard on first run.
+if [[ ! -f "${HA_CONFIG}/.storage/onboarding" ]]; then
+    echo "Creating default dev user (admin / admin)..."
+    hass --script auth -c "${HA_CONFIG}" add admin admin
+
+    mkdir -p "${HA_CONFIG}/.storage"
+
+    cat > "${HA_CONFIG}/.storage/onboarding" << 'ONBOARDING'
+{
+    "version": 4,
+    "minor_version": 1,
+    "key": "onboarding",
+    "data": {
+        "done": ["user", "core_config", "analytics", "integration"]
+    }
+}
+ONBOARDING
+
+    cat > "${HA_CONFIG}/.storage/auth" << 'AUTH'
+{
+    "version": 1,
+    "minor_version": 1,
+    "key": "auth",
+    "data": {
+        "users": [
+            {
+                "id": "dev-owner-id",
+                "group_ids": ["system-admin"],
+                "is_owner": true,
+                "is_active": true,
+                "name": "admin",
+                "system_generated": false,
+                "local_only": false
+            }
+        ],
+        "groups": [],
+        "credentials": [
+            {
+                "id": "dev-credential-id",
+                "user_id": "dev-owner-id",
+                "auth_provider_type": "homeassistant",
+                "auth_provider_id": null,
+                "data": {
+                    "username": "admin"
+                }
+            }
+        ],
+        "refresh_tokens": []
+    }
+}
+AUTH
+
+    echo "Dev user created. Login with admin / admin"
+fi
+
+# Write a minimal dev configuration (avoids default_config and its heavy deps).
+if ! grep -q "custom_components.{{ domain }}" "${HA_CONFIG}/configuration.yaml" 2>/dev/null; then
+    cat > "${HA_CONFIG}/configuration.yaml" << 'YAML'
+homeassistant:
+  name: Dev
+  unit_system: metric
+
+frontend:
+http:
+config:
+system_log:
+
+logger:
+  default: warning
+  logs:
+    custom_components.{{ domain }}: debug
+YAML
+fi
+
+echo "Starting Home Assistant..."
+echo "Access at: http://localhost:8123"
+echo "Login:     admin / admin"
+echo ""
+
+if [[ "${DEBUG}" == "1" || "${1}" == "--debug" ]]; then
+    echo "Debug mode enabled."
+    hass --config "${HA_CONFIG}" --debug
+else
+    hass --config "${HA_CONFIG}"
+fi
