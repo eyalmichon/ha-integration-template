@@ -62,3 +62,24 @@ python_version:
   type: str
   help: "Python version for the devcontainer and pyproject.toml — should match your target HA release"
   default: "3.13"
+
+install_hacs:
+  type: bool
+  help: "Install HACS (Home Assistant Community Store) in the dev environment? Adds ~10s to first startup for downloading and installing its dependencies"
+  default: false
+
+dev_integrations:
+  type: yaml
+  help: |
+    Optional extra HA integrations to enable in the dev configuration.yaml.
+    The base config already includes all lightweight built-in integrations (automation, script,
+    scene, input helpers, template, recorder, history, logbook, sun, etc.).
+    These are heavier or specialized integrations you can opt into.
+  multiselect: true
+  default: []
+  choices:
+    "MQTT broker (local mosquitto)": mqtt
+    "REST commands/sensors": rest
+    "Mobile App support": mobile_app
+    "Energy dashboard": energy
+    "Media Source": media_source

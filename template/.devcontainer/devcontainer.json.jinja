@@ -3,7 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/python:{{ python_version }}",
   "runArgs": ["--name", "ha-{{ domain }}"],
   "postCreateCommand": "scripts/setup",
-  "postStartCommand": "nohup scripts/develop > /tmp/ha.log 2>&1 &",
+  "postStartCommand": "scripts/develop",
   "forwardPorts": [8123],
   "portsAttributes": {
     "8123": {

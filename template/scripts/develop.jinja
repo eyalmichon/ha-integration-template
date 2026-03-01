@@ -19,11 +19,25 @@ if [[ ! -e "${HA_CONFIG}/custom_components/{{ domain }}" ]]; then
     ln -sf "${PWD}/custom_components/{{ domain }}" "${HA_CONFIG}/custom_components/{{ domain }}"
 fi
 
+{%- if install_hacs %}
+
 # Install HACS if not already present.
 if [[ ! -d "${HA_CONFIG}/custom_components/hacs" ]]; then
     echo "Installing HACS..."
     (cd "${HA_CONFIG}" && wget -qO- https://get.hacs.xyz | bash -) || echo "HACS install failed (non-fatal)"
 fi
+
+# Install HACS dependencies from its manifest.json.
+if [[ -f "${HA_CONFIG}/custom_components/hacs/manifest.json" ]]; then
+    echo "Installing HACS dependencies..."
+    python3 -c "
+import json, subprocess, sys
+reqs = json.load(open(sys.argv[1]))['requirements']
+if reqs:
+    subprocess.check_call(['sudo', 'uv', 'pip', 'install', '--system'] + reqs)
+" "${HA_CONFIG}/custom_components/hacs/manifest.json"
+fi
+{%- endif %}
 
 # Create default dev user and skip onboarding wizard on first run.
 if [[ ! -f "${HA_CONFIG}/.storage/onboarding" ]]; then
@@ -91,6 +105,41 @@ frontend:
 http:
 config:
 system_log:
+recorder:
+history:
+logbook:
+sun:
+webhook:
+person:
+zone:
+tag:
+backup:
+homeassistant_alerts:
+my:
+automation:
+script:
+scene:
+group:
+input_boolean:
+input_number:
+input_text:
+input_select:
+input_datetime:
+input_button:
+template:
+timer:
+counter:
+schedule:
+{%- for integration in dev_integrations %}
+{%- if integration == "mqtt" %}
+
+mqtt:
+  broker: localhost
+  port: 1883
+{%- else %}
+{{ integration }}:
+{%- endif %}
+{%- endfor %}
 
 logger:
   default: warning

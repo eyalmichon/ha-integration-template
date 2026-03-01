@@ -141,6 +141,28 @@ Python version for the devcontainer and `pyproject.toml`. Should match the versi
 - **Type**: string
 - **Default**: `3.13`
 
+### `install_hacs`
+
+Whether to install [HACS](https://hacs.xyz/) (Home Assistant Community Store) in the dev environment. Adds download and dependency installation to the develop script. Not needed for local development of your own integration, but useful if you want to test alongside other custom integrations.
+
+- **Type**: boolean
+- **Default**: `false`
+
+### `dev_integrations`
+
+Optional extra HA integrations to include in the dev `configuration.yaml`. The base config already includes all lightweight built-in integrations (automation, script, scene, input helpers, template, recorder, history, logbook, sun, etc.). These are heavier or specialized integrations you can opt into.
+
+- **Type**: multiselect
+- **Default**: none
+
+| Choice | Value |
+|--------|-------|
+| MQTT broker (local mosquitto) | `mqtt` |
+| REST commands/sensors | `rest` |
+| Mobile App support | `mobile_app` |
+| Energy dashboard | `energy` |
+| Media Source | `media_source` |
+
 ## Generated Project Structure
 
 ```
@@ -169,6 +191,40 @@ ha-my-integration/
   pyproject.toml                      # Python config
   hacs.json                           # HACS metadata
 ```
+
+## Developing This Template
+
+When making changes to the template itself, you can test locally without committing or pushing by using `--vcs-ref=HEAD`. This tells copier to use the latest commit plus any dirty (uncommitted) changes, bypassing tag-based version resolution:
+
+```bash
+# Test with defaults
+copier copy --trust --vcs-ref=HEAD --defaults \
+  -d domain=test_integration \
+  -d integration_name="Test Integration" \
+  ./path/to/ha-integration-template /tmp/test-scaffold
+
+# Test with multiselect options via a data file (workaround for -d multiselect bug)
+cat > /tmp/copier-data.yml << 'EOF'
+domain: test_integration
+integration_name: Test Integration
+description: A test
+github_user: testuser
+iot_class: local_polling
+integration_type: service
+platforms: "sensor,binary_sensor"
+has_config_flow: true
+python_version: "3.13"
+dev_integrations:
+  - mqtt
+  - rest
+EOF
+
+copier copy --trust --vcs-ref=HEAD --defaults \
+  --data-file /tmp/copier-data.yml \
+  ./path/to/ha-integration-template /tmp/test-scaffold
+```
+
+> **Note**: Without `--vcs-ref=HEAD`, copier resolves the latest git tag and reads `copier.yml` from that tag — so new questions or template changes won't appear until tagged. The `--data-file` approach is needed for multiselect questions because the `-d` flag has a [known copier bug](https://github.com/copier-org/copier/issues/1594) with multiselect values.
 
 ## Adding Integration-Specific MCP Tools
 
