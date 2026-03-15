@@ -19,7 +19,9 @@ jobs:
 
       - name: Bump manifest and create zip
         run: |
-          sed -i 's/v0.0.0/{% raw %}${{ steps.version.outputs.version }}{% endraw %}/' custom_components/{{ domain }}/manifest.json
+          version="{% raw %}${{ steps.version.outputs.version }}{% endraw %}"
+          version="${version#v}"
+          sed -i "s/0.0.0/${version}/" custom_components/{{ domain }}/manifest.json
           cd custom_components/{{ domain }}/
           zip ../../{{ domain }}.zip -r ./
 
