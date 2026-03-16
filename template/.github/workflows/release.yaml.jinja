@@ -21,7 +21,7 @@ jobs:
         run: |
           version="{% raw %}${{ steps.version.outputs.version }}{% endraw %}"
           version="${version#v}"
-          sed -i "s/0.0.0/${version}/" custom_components/{{ domain }}/manifest.json
+          sed -i 's/"version": ".*"/"version": "'"${version}"'"/' custom_components/{{ domain }}/manifest.json
           cd custom_components/{{ domain }}/
           zip ../../{{ domain }}.zip -r ./
 
