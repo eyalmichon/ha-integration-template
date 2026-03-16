@@ -4,6 +4,10 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+echo "Configuring git identity..."
+git config user.name "{{ git_name }}"
+git config user.email "{{ git_email }}"
+
 echo "Installing Python requirements..."
 sudo uv pip install --system ".[dev]"
 

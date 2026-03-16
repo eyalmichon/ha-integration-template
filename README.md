@@ -4,7 +4,7 @@ A [Copier](https://copier.readthedocs.io/) template for bootstrapping Home Assis
 
 ## What You Get
 
-- **Devcontainer**: Python 3.13, uv, Ruff, Pylance -- opens in VS Code/Cursor and just works
+- **Devcontainer**: Python 3.13, uv, gh CLI, Ruff, Pylance -- opens in VS Code/Cursor and just works
 - **CI Workflows**: Ruff lint, Hassfest, HACS validation, CodeQL, automated releases
 - **Pre-commit hooks**: Ruff format + lint on every commit
 - **Dependabot**: Auto-updates GitHub Actions versions
@@ -70,6 +70,20 @@ Your GitHub username. Used to generate URLs (documentation, issue tracker), CODE
 - **Type**: string
 - **Example**: `eyalmichon`
 - **Generates**: `https://github.com/<github_user>/ha-<domain>`
+
+### `git_name`
+
+Git author name for commits inside the devcontainer. Configured in the project-level `.git/config` by `scripts/setup`.
+
+- **Type**: string
+- **Example**: `Eyal Michon`
+
+### `git_email`
+
+Git author email for commits inside the devcontainer. Configured in the project-level `.git/config` by `scripts/setup`.
+
+- **Type**: string
+- **Example**: `eyal@example.com`
 
 ### `iot_class`
 
@@ -201,6 +215,8 @@ When making changes to the template itself, you can test locally without committ
 copier copy --trust --vcs-ref=HEAD --defaults \
   -d domain=test_integration \
   -d integration_name="Test Integration" \
+  -d git_name="Test User" \
+  -d git_email="test@example.com" \
   ./path/to/ha-integration-template /tmp/test-scaffold
 
 # Test with multiselect options via a data file (workaround for -d multiselect bug)
@@ -209,6 +225,8 @@ domain: test_integration
 integration_name: Test Integration
 description: A test
 github_user: testuser
+git_name: Test User
+git_email: test@example.com
 iot_class: local_polling
 integration_type: service
 platforms: "sensor,binary_sensor"

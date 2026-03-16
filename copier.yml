@@ -23,6 +23,14 @@ github_user:
   help: "GitHub username (for URLs and CODEOWNERS)"
   default: "eyalmichon"
 
+git_name:
+  type: str
+  help: "Git author name for commits inside the devcontainer"
+
+git_email:
+  type: str
+  help: "Git author email for commits inside the devcontainer"
+
 iot_class:
   type: str
   help: "How the integration communicates with devices/services (https://www.home-assistant.io/blog/2016/02/12/classifying-the-internet-of-things/)"
