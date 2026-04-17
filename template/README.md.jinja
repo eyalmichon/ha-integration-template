@@ -28,6 +28,10 @@
 2. Click **Add Integration**
 3. Search for **{{ integration_name }}**
 
+## Branding
+
+Drop your integration icon and logo in [`custom_components/{{ domain }}/brand/`](./custom_components/{{ domain }}/brand). On Home Assistant 2026.3+ they are served locally and override anything in the central [`home-assistant/brands`](https://github.com/home-assistant/brands) repo. See the [folder's README](./custom_components/{{ domain }}/brand/README.md) for the expected filenames and sizes.
+
 ## Development
 
 This project uses a devcontainer for development. Open in VS Code or Cursor and click "Reopen in Container".

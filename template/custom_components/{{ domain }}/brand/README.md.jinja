@@ -1,0 +1,37 @@
+# Brand images for `{{ integration_name }}`
+
+Drop your integration's brand images in this directory and Home Assistant will serve them locally via its brand API (`/api/brands/integration/{{ domain }}/icon.png`, etc.). Local images here take precedence over anything in the [`home-assistant/brands`](https://github.com/home-assistant/brands) repository.
+
+> Requires **Home Assistant 2026.3+**. On older versions HA only looks at the central brands repo, so this folder is ignored. (See the [brand images developer docs](https://developers.home-assistant.io/docs/core/integration/brand_images) and the [brands proxy API announcement](https://developers.home-assistant.io/blog/2026/02/24/brands-proxy-api).)
+
+## Expected files
+
+All files are optional; add what you have. PNG only, trim empty space around the subject, and prefer transparent backgrounds.
+
+| Filename         | Used for                         | Required size                                                |
+| ---------------- | -------------------------------- | ------------------------------------------------------------ |
+| `icon.png`       | Square icon (tight UI, HACS, app icon) | 256×256, 1:1                                            |
+| `icon@2x.png`    | hDPI icon                         | 512×512, 1:1                                                |
+| `logo.png`       | Landscape logo (config pages)    | Shortest side 128–256 px, respect brand aspect ratio         |
+| `logo@2x.png`    | hDPI landscape logo              | Shortest side 256–512 px                                     |
+| `dark_icon.png`  | Dark-theme optimized icon         | Same spec as `icon.png`                                     |
+| `dark_icon@2x.png` | Dark-theme hDPI icon            | Same spec as `icon@2x.png`                                  |
+| `dark_logo.png`  | Dark-theme optimized logo         | Same spec as `logo.png`                                     |
+| `dark_logo@2x.png` | Dark-theme hDPI logo            | Same spec as `logo@2x.png`                                  |
+
+If you only have a square brand image, ship only the icons — HA will use the icon as a fallback for the logo. If you only have a light-theme image, skip the `dark_*` variants and HA will fall back to them.
+
+## After adding images
+
+Home Assistant caches brand images aggressively (browser: 7 days, Cloudflare: 24h for the hosted brands site). After dropping new files:
+
+1. Restart Home Assistant.
+2. Hard-refresh the frontend (or try a private window) if you still see a placeholder.
+
+## Known caveat (HACS)
+
+Even on HA 2026.3+, the HACS dashboard fetches its own thumbnails from the HACS CDN (`data-v2.hacs.xyz`) and does **not** yet fall back to the local brand API — see [hacs/integration#5171](https://github.com/hacs/integration/issues/5171). The HA integrations page, config flow, and device pages render local brand images correctly.
+
+## Contributing to HA Core
+
+If this integration is ever contributed to Home Assistant Core, the brand images must move to the [`home-assistant/brands`](https://github.com/home-assistant/brands) repo (under `core_integrations/{{ domain }}/`). Delete this directory and open a PR there instead.

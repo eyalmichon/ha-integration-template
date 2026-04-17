@@ -194,6 +194,7 @@ ha-my-integration/
     manifest.json                     # HA manifest
     strings.json                      # UI strings
     translations/en.json              # English translations
+    brand/                            # Local icon/logo for HA 2026.3+
   scripts/
     setup                             # Install deps + pre-commit
     develop                           # Run HA locally
