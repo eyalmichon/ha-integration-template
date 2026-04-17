@@ -8,8 +8,26 @@ echo "Configuring git identity..."
 git config user.name "{{ git_name }}"
 git config user.email "{{ git_email }}"
 
+echo "Installing system packages required by Home Assistant core integrations..."
+sudo apt-get update -qq
+sudo apt-get install -y --no-install-recommends ffmpeg libturbojpeg0
+
 echo "Installing Python requirements..."
 sudo uv pip install --system ".[dev]"
+
+# Pre-install Python deps that HA auto-loads for core integrations
+# (ffmpeg, camera, conversation, infrared, tts, assist_pipeline). Installing
+# them up-front avoids a noisy first HA startup where HA installs them in the
+# background but the running process has already cached failed imports.
+# Pins match HA manifest requirements for HA 2026.4 — bump when HA updates them.
+echo "Pre-installing HA core integration runtime deps..."
+sudo uv pip install --system \
+    "ha-ffmpeg==3.2.2" \
+    "home-assistant-intents==2026.3.24" \
+    "PyTurboJPEG==1.8.0" \
+    "infrared-protocols==1.1.0" \
+    "mutagen==1.47.0" \
+    "pyspeex-noise==1.0.2"
 
 echo "Installing pre-commit hooks..."
 pre-commit install
