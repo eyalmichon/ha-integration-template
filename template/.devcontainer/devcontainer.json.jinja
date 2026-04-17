@@ -4,10 +4,6 @@
   "runArgs": ["--name", "ha-{{ domain }}"],
   "postCreateCommand": "scripts/setup",
   "postStartCommand": "scripts/develop",
-  "mounts": [
-    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
   "forwardPorts": [8123],
   "portsAttributes": {
     "8123": {

@@ -5,7 +5,6 @@ A [Copier](https://copier.readthedocs.io/) template for bootstrapping Home Assis
 ## What You Get
 
 - **Devcontainer**: Python 3.14, uv, gh CLI, Ruff, Pylance -- opens in VS Code/Cursor and just works
-- **Host auth sharing**: `~/.config/gh` and `~/.ssh` are bind-mounted from the host, so `gh` and `git` auth survives container rebuilds
 - **CI Workflows**: Ruff lint, Hassfest, HACS validation, CodeQL, automated releases
 - **Pre-commit hooks**: Ruff format + lint on every commit
 - **Dependabot**: Auto-updates GitHub Actions versions
