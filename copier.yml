@@ -68,8 +68,8 @@ has_config_flow:
 
 python_version:
   type: str
-  help: "Python version for the devcontainer and pyproject.toml — should match your target HA release"
-  default: "3.13"
+  help: "Python version for the devcontainer and pyproject.toml — should match your target HA release (HA 2026.3+ requires 3.14+)"
+  default: "3.14"
 
 install_hacs:
   type: bool

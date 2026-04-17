@@ -4,7 +4,8 @@ A [Copier](https://copier.readthedocs.io/) template for bootstrapping Home Assis
 
 ## What You Get
 
-- **Devcontainer**: Python 3.13, uv, gh CLI, Ruff, Pylance -- opens in VS Code/Cursor and just works
+- **Devcontainer**: Python 3.14, uv, gh CLI, Ruff, Pylance -- opens in VS Code/Cursor and just works
+- **Host auth sharing**: `~/.config/gh` and `~/.ssh` are bind-mounted from the host, so `gh` and `git` auth survives container rebuilds
 - **CI Workflows**: Ruff lint, Hassfest, HACS validation, CodeQL, automated releases
 - **Pre-commit hooks**: Ruff format + lint on every commit
 - **Dependabot**: Auto-updates GitHub Actions versions
@@ -150,10 +151,10 @@ Whether to include a config flow (the UI-based setup wizard in Settings > Device
 
 ### `python_version`
 
-Python version for the devcontainer and `pyproject.toml`. Should match the version required by the Home Assistant release you're targeting.
+Python version for the devcontainer and `pyproject.toml`. Should match the version required by the Home Assistant release you're targeting. Home Assistant 2026.3+ requires Python 3.14+; older HA releases still support Python 3.13.
 
 - **Type**: string
-- **Default**: `3.13`
+- **Default**: `3.14`
 
 ### `install_hacs`
 
@@ -232,7 +233,7 @@ iot_class: local_polling
 integration_type: service
 platforms: "sensor,binary_sensor"
 has_config_flow: true
-python_version: "3.13"
+python_version: "3.14"
 dev_integrations:
   - mqtt
   - rest
